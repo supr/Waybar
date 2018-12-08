@@ -24,7 +24,7 @@ struct SleeperThread {
 
   SleeperThread(std::function<void()> func)
     : thread_{[this, func] {
-        while(true) {
+        while (true) {
           {
             std::lock_guard<std::mutex> lock(mutex_);
             if (!do_run_) {
@@ -39,7 +39,7 @@ struct SleeperThread {
   SleeperThread& operator=(std::function<void()> func)
   {
     thread_ = std::thread([this, func] {
-      while(true) {
+      while (true) {
         {
           std::lock_guard<std::mutex> lock(mutex_);
           if (!do_run_) {
@@ -75,7 +75,7 @@ struct SleeperThread {
     do_run_ = false;
     condvar_.notify_all();
     if (thread_.joinable()) {
-      thread_.detach();
+      pthread_cancel(thread_.native_handle());
     }
   }
 
